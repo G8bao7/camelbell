@@ -1,2 +1,2 @@
-# camelbell
-lepus plus
+# camelbell server
+lp-plus
