@@ -1,0 +1,72 @@
+#!/bin/bash
+
+basedir="/usr/local/camelbell"
+
+#check basedir
+#############################################################################
+if test -z "$basedir"
+then
+  basedir=/usr/local/camelbell
+else
+  basedir="$basedir"
+fi
+log="$basedir/logs/camelbell.log"
+arg=$1
+camelbell_process=`ps -ef|grep camelbell.py |grep -v grep|wc -l`
+case "$arg" in
+  'status')
+    #check camelbell status
+    if [ $camelbell_process -ge "2" ];then
+       echo "camelbell server is running..."
+    else
+       echo "camelbell server is not run!"
+    fi
+  ;;
+
+  'start')
+    #start camelbell
+    if [ $camelbell_process -ge "2" ];then
+       echo " camelbell server is already run!"
+    else
+       cd $basedir && nohup  python camelbell.py & > /dev/null 2>&1
+       sleep 5
+       camelbell_process=`ps -ef|grep camelbell.py |grep -v grep|wc -l`
+       if [ $camelbell_process -ge "2" ];then
+          echo "camelbell server start success!"
+       else
+          echo "camelbell server start fail!"
+       fi
+    fi
+  ;;
+
+  'stop')
+    #stop camelbell
+    if [ $camelbell_process -le "2" ];then
+       echo "camelbell server is not running!"
+    else
+       ps -ef |grep -i -E "camelbell.py"|grep -v -E "vi|grep"|awk '{print $2}' |while read line; do kill $line; echo "camelbell processes id $line been stop"; done 
+       ps -ef |grep -i -E "alarm.py"|grep -v -E "vi|grep"|awk '{print $2}' |while read line; do kill $line; echo "camelbell processes id $line been stop"; done 
+       #killall python camelbell.py*
+        mv $log $log.`date '+%Y%m%d-%H%M'`
+    fi
+  ;;
+
+  '--help')
+    #for help
+    echo "camelbell help:"
+    echo "===================================================================="
+    echo "start        Start camelbell monitor server; Command: #camelbell start"
+    echo "stop         Stop camelbell monitor server; Command: #camelbell stop"
+    echo "status       Check camelbell monitor run status; Command: #camelbell status"
+  ;;
+    *)
+        echo "Please input  --help to read the help info."
+    ;;
+
+esac
+
+exit 0  
+  
+
+
+

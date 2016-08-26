@@ -1,0 +1,9 @@
+#!/bin/bash
+
+
+camelbell_process=`ps -ef|grep camelbell.py |grep -v grep|wc -l`
+if [ $camelbell_process -le "3" ];then
+       echo "`date` camelbell server is not run."
+else
+       echo "`date` camelbell server is running..."
+fi
