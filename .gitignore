@@ -4,6 +4,9 @@
 # /composer.lock
 /fuel/vendor
 
+# pyc
+*.pyc
+
 # the fuelphp document
 /docs/
 
